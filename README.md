@@ -1,6 +1,6 @@
 ## Challenge
 
-The challenge's purpose is to create a user record management service. The service must be implemented in a Spring Boot RESTful
+The challenge's purpose is to create a user record management service. The service must be implemented as a Spring Boot RESTful
 Java application built with Maven. You are free to choose any data storage technology. Code should be covered with
 integration and/or functional tests.
 
