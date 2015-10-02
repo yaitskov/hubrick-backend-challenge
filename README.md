@@ -31,5 +31,4 @@ Format of data consumed and produced by the service is JSON.
 
 ## Expectations
 
-We are looking for elegant design, maintainability of the code and robustness in your application. It also need to comply with
-generally accepted RESTful API design principles.
+We are looking for elegant design, maintainability of the code and robustness in your application. It also needs to comply with generally accepted RESTful API design principles.
