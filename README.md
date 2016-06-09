@@ -1,34 +1,23 @@
-## Challenge
+# Files
 
-The challenge's purpose is to create a user record management service. The service must be implemented as a Spring Boot RESTful
-Java application built with Maven. You are free to choose any data storage technology. Code should be covered with
-integration and/or functional tests.
+There are three commma separated files in `data` directory:
 
-Tests must run with help of Maven command:
- 
-    $ mvn clean verify
+ * departments.csv  - list of departments
+ * employees.csv    - first column contains position of department in alphabetically sorted department list, followed by employee name and salary
+ * ages.csv         - first column contains employee name, followed by age
 
-The service should be started with following command:
+# Challenge
 
-    $ mvn spring-boot:run
+Write a Java program that will generate the following reports in corresponding files.
 
-### Features
+ * income-by-department.csv - median income by department
+ * income-95-by-department.csv - 95-percentile income by department
+ * income-average-by-age-range.csv - average income by age ranges with factor of ten
+ * employee-age-by-department.csv - median employee age by department
 
-The service must provide the following features:
+Reports must be generated in a comma separated format with header columns.
 
-  - creation of users
-  - updating of existing user records
-  - deletion of existing users
+# Conditions
 
-User has the following properties:
-
-  - first name
-  - last name
-  - e-mail
-  - password
-
-Format of data consumed and produced by the service is JSON.
-
-## Expectations
-
-We are looking for elegant design, maintainability of the code and robustness in your application. It also needs to comply with generally accepted RESTful API design principles.
+ * Code should be compilable with Oracle JDK 1.8 and run with path to directory containing data files as first parameter.
+ * Only libraries that are part of Oracle Java Runtime are allowed in production code.
