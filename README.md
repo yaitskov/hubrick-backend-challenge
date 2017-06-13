@@ -21,3 +21,5 @@ Reports must be generated in a comma separated format with header columns.
 
  * Code should be compilable with Oracle JDK 1.8 and run with path to directory containing data files as first parameter.
  * Only libraries that are part of Oracle Java Runtime are allowed in production code.
+ * provide the solution source code either as zip or as a link to the code repository
+ * time cap is hard to quantify, as a rough guideline 3h should be enough but please spend as much time as you need to come up with a solution you are satisfied with and confident about
