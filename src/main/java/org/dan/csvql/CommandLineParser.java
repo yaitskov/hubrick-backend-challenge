@@ -8,19 +8,17 @@ import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.nio.file.Paths;
 import java.util.Iterator;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class CommandLineParser {
     static final String INPUT_CHAR_SET = "-input-char-set";
     private static final String OUTPUT_CHAR_SET = "-output-char-set";
+    private static final String CLEAN = "-clean";
 
-    private final Consumer<String> output;
     private final Iterator<String> args;
     private final AppParams appParams = new AppParams();
 
-    public CommandLineParser(Consumer<String> output, Iterator<String> args) {
-        this.output = output;
+    public CommandLineParser(Iterator<String> args) {
         this.args = args;
     }
 
@@ -54,6 +52,9 @@ public class CommandLineParser {
 
     private void parseAnOption(String option) {
         switch (option) {
+            case CLEAN:
+                appParams.setDropBadLines(false);
+                break;
             case INPUT_CHAR_SET:
                 appParams.setInputCharset(apply(INPUT_CHAR_SET, this::charset));
                 break;

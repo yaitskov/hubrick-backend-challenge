@@ -7,7 +7,7 @@ import org.dan.csvql.CommandLineParser.ParserException;
 public class EntryPoint {
     public static void main(String[] args) {
         final CommandLineParser commandLineParser = new CommandLineParser(
-                System.out::println, asList(args).iterator());
+                asList(args).iterator());
         try {
             final AppParams appParams = commandLineParser.parse();
             buildReports(appParams);

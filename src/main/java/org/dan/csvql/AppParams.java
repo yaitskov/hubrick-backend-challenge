@@ -10,6 +10,7 @@ public class AppParams {
     private Charset inputCharset = UTF_8;
     private Charset outputCharset = UTF_8;
     private Path dataFolder;
+    private boolean isDropBadLines = true;
 
     public Path getDataFolder() {
         return dataFolder;
@@ -33,5 +34,13 @@ public class AppParams {
 
     public void setOutputCharset(Charset outputCharset) {
         this.outputCharset = outputCharset;
+    }
+
+    public void setDropBadLines(boolean dropBadLines) {
+        isDropBadLines = dropBadLines;
+    }
+
+    public boolean isDropBadLines() {
+        return isDropBadLines;
     }
 }

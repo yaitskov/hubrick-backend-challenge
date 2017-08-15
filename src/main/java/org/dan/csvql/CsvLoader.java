@@ -8,12 +8,17 @@ import static org.dan.csvql.Checks.ensure;
 import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 
 public class CsvLoader {
+    private static final Logger logger = Logger.getLogger(CsvLoader.class.getName());
+
+    private final boolean dropBadLines;
     private final List<Column> columns;
 
-    public CsvLoader(List<Column> columns) {
+    public CsvLoader(boolean dropBadLines, List<Column> columns) {
+        this.dropBadLines = dropBadLines;
         this.columns = columns;
     }
 
@@ -22,17 +27,34 @@ public class CsvLoader {
             final List<Relation> elements = new ArrayList<>();
             final int expectedColumns = columns.size();
             final Counter lineNumber = new Counter("Line", 1);
+            int droppedLinesCounter = 0;
+            int totalLinesCounter = 0;
             while (true) {
                 final String line = reader.readLine();
+                ++totalLinesCounter;
                 if (line == null) {
                     break;
                 }
-                final List<String> rawColumnValues = asList(line.split(","));
-                ensure(rawColumnValues.size() == expectedColumns,
-                        () -> format("%s has [%d] columns but required [%d]",
-                                lineNumber, rawColumnValues.size(), expectedColumns));
-                elements.add(
-                        parseLine(expectedColumns, lineNumber, rawColumnValues));
+                try {
+                    final List<String> rawColumnValues = asList(line.split(","));
+                    ensure(rawColumnValues.size() == expectedColumns,
+                            () -> format("%s has [%d] columns but required [%d]",
+                                    lineNumber, rawColumnValues.size(), expectedColumns));
+                    elements.add(
+                            parseLine(expectedColumns, lineNumber, rawColumnValues));
+                } catch (RuntimeException e) {
+                    if (dropBadLines) {
+                        logger.throwing("Drop line due bad format", "parse", e);
+                        ++droppedLinesCounter;
+                        continue;
+                    }
+                    throw e;
+                }
+            }
+            if (droppedLinesCounter > 0) {
+                logger.warning("Incomplete files."
+                        +  ((double) droppedLinesCounter / totalLinesCounter)
+                        + " lines only accepted.");
             }
             return new ListBasedRelationalSet(new MetaRelation(columns), elements);
         });

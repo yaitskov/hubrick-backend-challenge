@@ -92,7 +92,7 @@ public class Reports {
     private RelationalSet readFile(String name, Column... columns) {
         return MoreFiles.readFrom(resolve(name),
                 params.getInputCharset(),
-                new CsvLoader(asList(columns))::load);
+                new CsvLoader(params.isDropBadLines(), asList(columns))::load);
     }
 
     private void writeFile(String name, RelationalSet set) {
