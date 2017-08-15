@@ -16,6 +16,8 @@ public interface MoreFiles {
     static <T> T readFrom(Path path, Charset charset, Function<BufferedReader, T> consumer) {
         try (BufferedReader reader = newBufferedReader(path, charset)) {
             return consumer.apply(reader);
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Failed on file ["  + path + "]", e);
         } catch (IOException e) {
             throw Exceptions.asUnchecked(e);
         }

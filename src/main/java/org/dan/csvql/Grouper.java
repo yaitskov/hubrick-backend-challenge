@@ -22,19 +22,24 @@ public class Grouper {
                 .columnIndex(groupBy);
         final int aggregateIdx = origin.getMetaRelation()
                 .columnIndex(aggregate);
+        final RelationalSet sortedOrigin = new Sorter(
+                origin.getMetaRelation()
+                        .getColumns().get(groupByIdx))
+                .sort(origin);
         final List<Relation> result = new ArrayList<>();
         final List<ColumnValue> reductionSet = new ArrayList<>();
         ColumnValue previous = null;
-        for (Relation relation : origin) {
+        for (Relation relation : sortedOrigin) {
             final ColumnValue current = relation.get(groupByIdx);
             if (previous == null) {
                 previous = current;
-                reductionSet.add(current);
+                reductionSet.add(relation.get(aggregateIdx));
             } else if (previous.compareTo(current) == 0) {
-                reductionSet.add(current);
+                reductionSet.add(relation.get(aggregateIdx));
             } else {
                 result.add(new RelationArray(
-                        asList(current, aggregator.apply(reductionSet))));
+                        asList(previous, aggregator.apply(reductionSet))));
+                previous = null;
                 reductionSet.clear();
             }
         }

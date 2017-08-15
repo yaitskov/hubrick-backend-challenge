@@ -15,4 +15,8 @@ public class NullValue implements ColumnValue {
         }
         return 1;
     }
+
+    public String toString() {
+        return "null";
+    }
 }

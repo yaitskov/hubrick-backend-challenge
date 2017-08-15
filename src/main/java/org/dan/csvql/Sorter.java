@@ -6,7 +6,6 @@ import static org.dan.csvql.Projector.findIndexes;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.TreeSet;
 
 public class Sorter {
     private final List<Column> columns;
@@ -16,10 +15,14 @@ public class Sorter {
     }
 
     public RelationalSet sort(RelationalSet origin) {
-        return new ListBasedRelationalSet(origin.getMetaRelation(),
-                new ArrayList<>(new TreeSet<>(
-                        new RelationalComparator(
-                                findIndexes(columns, origin.getMetaRelation())))));
+        List<Relation> elements = new ArrayList<>(origin.size());
+
+        for (Relation relation : origin) {
+            elements.add(relation);
+        }
+        elements.sort(new RelationalComparator(
+                findIndexes(columns, origin.getMetaRelation())));
+        return new ListBasedRelationalSet(origin.getMetaRelation(), elements);
     }
 
     private static class RelationalComparator implements Comparator<Relation> {

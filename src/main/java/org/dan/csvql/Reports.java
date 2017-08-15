@@ -57,7 +57,8 @@ public class Reports {
 
     private void incomeByDepartment(RelationalSet allRelation) {
         final RelationalSet result = new Grouper(DEPARTMENT_NAME.getName(),
-                SALARY.getName(), new Median(0.5)).group(allRelation);
+                SALARY.getName(), new Median(0.5))
+                .group(allRelation);
         writeFile("income-by-department.csv",
                 new Sorter(SALARY).sort(result));
     }

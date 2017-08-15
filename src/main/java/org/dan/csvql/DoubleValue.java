@@ -27,4 +27,8 @@ public class DoubleValue implements ColumnValue, NumericalColumnValue {
     public NumericalColumnValue sum(NumericalColumnValue b) {
         return new DoubleValue(value + ((DoubleValue) b).value);
     }
+
+    public String toString() {
+        return String.valueOf(value);
+    }
 }

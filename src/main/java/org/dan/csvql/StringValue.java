@@ -22,4 +22,19 @@ public class StringValue implements ColumnValue {
     public int compareTo(ColumnValue value) {
         return CASE_INSENSITIVE_ORDER.compare(this.value, value.freeze());
     }
+
+    public int hashCode() {
+        return value.hashCode();
+    }
+
+    public boolean equals(Object o) {
+        if (o == null || o.getClass() != StringValue.class) {
+            return false;
+        }
+        return value.equals(((StringValue) o).value);
+    }
+
+    public String toString() {
+        return String.format("\"%s\"", value);
+    }
 }

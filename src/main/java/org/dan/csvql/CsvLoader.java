@@ -29,7 +29,7 @@ public class CsvLoader {
                 }
                 final List<String> rawColumnValues = asList(line.split(","));
                 ensure(rawColumnValues.size() == expectedColumns,
-                        () -> format("Line [%d] has [%d] columns but required [%d]",
+                        () -> format("%s has [%d] columns but required [%d]",
                                 lineNumber, rawColumnValues.size(), expectedColumns));
                 elements.add(
                         parseLine(expectedColumns, lineNumber, rawColumnValues));
@@ -48,7 +48,7 @@ public class CsvLoader {
                 relationValues.add(type.defrost(rawValue));
             } catch (NumberFormatException e) {
                 throw new RuntimeException(
-                       format("Line [%d] Column [%d] Value [%s] is not %s",
+                       format("%s Column [%d] Value [%s] is not %s",
                                lineNumber, iCol + 1, rawValue, type), e);
             }
         }

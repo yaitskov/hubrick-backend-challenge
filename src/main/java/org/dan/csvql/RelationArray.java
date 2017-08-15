@@ -27,4 +27,11 @@ public class RelationArray implements Relation {
     public Relation join(Relation r) {
         return new RelationArray(concat(columnValues, r.getColumnValues()));
     }
+
+    public String toString() {
+        return "[" + columnValues.stream().map(Object::toString)
+                .reduce((a, b) -> String.format("%s, %s", a, b))
+                .orElse("")
+                + "]";
+    }
 }

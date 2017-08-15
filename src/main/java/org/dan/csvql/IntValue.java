@@ -27,4 +27,19 @@ public class IntValue implements ColumnValue, NumericalColumnValue {
     public NumericalColumnValue sum(NumericalColumnValue b) {
         return new DoubleValue(value + ((IntValue) b).value);
     }
+
+    public boolean equals(Object o) {
+        if (o == null || o.getClass() != IntValue.class) {
+            return false;
+        }
+        return value == ((IntValue) o).value;
+    }
+
+    public int hashCode() {
+        return value;
+    }
+
+    public String toString() {
+        return String.valueOf(value);
+    }
 }
