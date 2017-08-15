@@ -7,8 +7,6 @@ import static org.dan.csvql.Column.ofString;
 
 import java.nio.file.Path;
 
-import javax.swing.plaf.synth.SynthLookAndFeel;
-
 public class Reports {
     private static final Column EMPLOYEE_NAME = ofString("employee-name");
     private static final EqualRelationalPredicateFactory BY_EMPLOYEE_NAME = new EqualRelationalPredicateFactory(EMPLOYEE_NAME.getName());
@@ -16,6 +14,9 @@ public class Reports {
     private static final EqualRelationalPredicateFactory BY_DEPARTMENT_ID = new EqualRelationalPredicateFactory(DEPARTMENT_ID.getName());
     private static final Column DEPARTMENT_NAME = ofString("department-name");
     private static final Column SALARY = ofDouble("salary");
+    private static final Column EMPLOYEE_AGE = ofInt("employee-age");
+    private static final Column EMPLOYEE_AVERAGE_AGE = ofInt("employee-average-age");
+    private static final int YEARS_RANGE = 10;
 
     private final AppParams params;
 
@@ -25,7 +26,18 @@ public class Reports {
 
     public void build() {
         final RelationalSet allRelation = loadAllAndJoin();
-        incomeByDepartment(allRelation);
+        incomeByDepartment(allRelation, "income-by-department.csv", 0.5);
+        incomeByDepartment(allRelation, "income-95-by-department.csv", 0.95);
+        averageIncomeByAgeRange(allRelation, "income-average-by-age-range.csv");
+        employeeAgeByDepartment(allRelation, "employee-age-by-department.csv");
+    }
+
+    private void employeeAgeByDepartment(RelationalSet allRelation, String name) {
+        final RelationalSet result = new Grouper(DEPARTMENT_NAME.getName(),
+                EMPLOYEE_AGE.getName(), new Median(0.5))
+                .group(allRelation);
+        writeFile(name,
+                new Sorter(DEPARTMENT_NAME).sort(result));
     }
 
     private Path resolve(String other) {
@@ -42,7 +54,7 @@ public class Reports {
                                 new EnumeratingSet(DEPARTMENT_ID.getName())) ;
 
         final RelationalSet ageRelation = readFile("ages.csv",
-                EMPLOYEE_NAME, ofInt("employee-age"));
+                EMPLOYEE_NAME, EMPLOYEE_AGE);
 
         final RelationalSet employeeRelation = readFile("employees.csv",
                 DEPARTMENT_ID, EMPLOYEE_NAME, ofString("employee-gender"),
@@ -55,12 +67,26 @@ public class Reports {
                                 .apply(employeeRelation, departmentRelation));
     }
 
-    private void incomeByDepartment(RelationalSet allRelation) {
+    private void incomeByDepartment(RelationalSet allRelation, String name, double ration) {
         final RelationalSet result = new Grouper(DEPARTMENT_NAME.getName(),
-                SALARY.getName(), new Median(0.5))
+                SALARY.getName(), new Median(ration))
                 .group(allRelation);
-        writeFile("income-by-department.csv",
+        writeFile(name,
                 new Sorter(SALARY).sort(result));
+    }
+
+    private void averageIncomeByAgeRange(RelationalSet allRelation, String name) {
+        final RelationalSet roundedAge = new Synthesizer()
+                .synthesize(allRelation, EMPLOYEE_AGE.getName(),
+                        EMPLOYEE_AVERAGE_AGE.getName(),
+                        new ClusterizeFunc(YEARS_RANGE));
+
+        final RelationalSet result = new Grouper(
+                EMPLOYEE_AVERAGE_AGE.getName(),
+                SALARY.getName(), new Average())
+                .group(roundedAge);
+        writeFile(name,
+                new Sorter(EMPLOYEE_AVERAGE_AGE).sort(result));
     }
 
     private RelationalSet readFile(String name, Column... columns) {
